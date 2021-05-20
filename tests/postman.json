@@ -1,0 +1,1594 @@
+{
+	"info": {
+		"_postman_id": "e13270b0-7a68-4c12-8030-cfec09872f4c",
+		"name": "Natality Stats API - v2",
+		"description": "The API is divided in two folders one for queries and other for crud and status codes, inside every folder you have a subfolder with the main url we are testing, the natality-stats API.\nI used subfolders so i can read easily the diferent names of the request from the postman's app.\nThis version updates the numbers of entries populated in the loadInitalData query.\n\n## Important Note\n- Queries only display **exact** matches.\n- The resource identifier is **country** and **year**.\n- Resource parameters:\n - country\n - date\n - born\n - men-born\n - women-born\n - natality-rate\n - fertility-rate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Query and pagination",
+			"item": [
+				{
+					"name": "/api/v2/natality-stats/",
+					"item": [
+						{
+							"name": "- Initial state with no data",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Empty resource\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "loadInitialData - create 49 resources",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Load resources\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/loadInitialData",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"loadInitialData"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- check resources",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Load resources\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Data is not empty\", function () {\r",
+											"    var jsonData = pm.response.json();   \r",
+											"\tpm.expect(jsonData).to.have.lengthOf.above(0);  \r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- add uk",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Load resources\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test(\"Test data type of the request\", () => {\r",
+											"  const jsonData = JSON.parse(pm.request.body.raw);\r",
+											"  \r",
+											"  pm.expect(jsonData.country).to.be.a(\"string\");\r",
+											"  pm.expect(jsonData.date).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData.born).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"men-born\"]).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"women-born\"]).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"natality-rate\"]).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"fertility-rate\"]).to.be.a(\"number\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"uk\",\r\n    \"date\": 2019,\r\n    \"born\": 712699,\r\n    \"men-born\": 375379,\r\n    \"women-born\": 355539,\r\n    \"natality-rate\": 10.70,\r\n    \"fertility-rate\": 1.68\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- check 6 resources",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"There is 50 resources\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.eql(50);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "?born=61167&date=2019 - Search 2019 and born = 61167",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"pm.test(\"Check data selected\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData[0].date).to.eql(2019);\r",
+											"    pm.expect(jsonData[0].born).to.eql(61167);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats?born=61167&date=2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									],
+									"query": [
+										{
+											"key": "born",
+											"value": "61167"
+										},
+										{
+											"key": "date",
+											"value": "2019"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- Busqueda por todos los campos",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats?country=spain&date=2019&born=360617&men-born=185523&women-born=175094&natality-rate=7.62&fertility-rate=1.24",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									],
+									"query": [
+										{
+											"key": "country",
+											"value": "spain"
+										},
+										{
+											"key": "date",
+											"value": "2019"
+										},
+										{
+											"key": "born",
+											"value": "360617"
+										},
+										{
+											"key": "men-born",
+											"value": "185523"
+										},
+										{
+											"key": "women-born",
+											"value": "175094"
+										},
+										{
+											"key": "natality-rate",
+											"value": "7.62"
+										},
+										{
+											"key": "fertility-rate",
+											"value": "1.24"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "?limit=4&offset=2 - Search limit and offset",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"pm.test(\"There is 4 resources\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.eql(4);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats?limit=4&offset=2",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "4"
+										},
+										{
+											"key": "offset",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "?offset=2 - Pagination offset",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"pm.test(\"There is 46 resources\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.eql(46);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats?offset=4",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "?limit=1 - Pagintaion limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"pm.test(\"There is 1 resource\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    console.log(jsonData.length)\r",
+											"    pm.expect(jsonData.length).to.eql(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats?limit=1",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "?date=2019&limit=2&offset=3 - Search date limit offset",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"pm.test(\"There is 1 resource\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.eql(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats?date=2019&limit=1&offset=4",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									],
+									"query": [
+										{
+											"key": "date",
+											"value": "2019"
+										},
+										{
+											"key": "limit",
+											"value": "1"
+										},
+										{
+											"key": "offset",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "?men-born=185523 - Search date limit offset Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"pm.test(\"There is 1 resource\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.eql(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats?men-born=185523",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									],
+									"query": [
+										{
+											"key": "men-born",
+											"value": "185523"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "?men-born=-10 - Search not found value",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats?men-born=-10",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									],
+									"query": [
+										{
+											"key": "men-born",
+											"value": "-10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "?nothing=3 - Search with wrong parameter",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats?nothing=3",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									],
+									"query": [
+										{
+											"key": "nothing",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- delete all data",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "CRUD and status codes",
+			"item": [
+				{
+					"name": "/api/v2/natality-stats/",
+					"item": [
+						{
+							"name": "- Empty API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Empty resource\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "loadInitialData - create 2 resources",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Load resources\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/loadInitialData",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"loadInitialData"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "loadInitialData - again",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Resources already exists\", function () {\r",
+											"    pm.response.to.have.status(409);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/loadInitialData",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"loadInitialData"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/cuba/2019 - check not found resource",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"not found resource\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/cuba/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"cuba",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/denmark/2019 - check denmark 2019",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"get resource\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"pm.test(\"Data displayed\", function () {\r",
+											"    pm.response.to.be.withBody;\r",
+											"    pm.response.to.be.json;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/denmark/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"denmark",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- check 2 resources",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"49 resources\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"There is 49 resources\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.eql(49);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "denmark/2019 - check not allowed",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Not allowed\", function () {\r",
+											"    pm.response.to.have.status(405);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"finland\",\r\n    \"date\": 2019,\r\n    \"born\": 45613,\r\n    \"men-born\": 23186,\r\n    \"women-born\": 22427,\r\n    \"natality-rate\": 8.30\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/denmark/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"denmark",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- add prusia",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test(\"Test data type of the request\", () => {\r",
+											"  const jsonData = JSON.parse(pm.request.body.raw);\r",
+											"  \r",
+											"  pm.expect(jsonData.country).to.be.a(\"string\");\r",
+											"  pm.expect(jsonData.date).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData.born).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"men-born\"]).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"women-born\"]).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"natality-rate\"]).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"fertility-rate\"]).to.be.a(\"number\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"prusia\",\r\n    \"date\": 2019,\r\n    \"born\": 45613,\r\n    \"men-born\": 2316,\r\n    \"women-born\": 2247,\r\n    \"natality-rate\": 5.30,\r\n    \"fertility-rate\": 1.25\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- check 50 resources",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"50 resources\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"There is 50 resources\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.eql(50);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- add prusia again",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 409\", function () {\r",
+											"    pm.response.to.have.status(409);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"prusia\",\r\n    \"date\": 2019,\r\n    \"born\": 45613,\r\n    \"men-born\": 2316,\r\n    \"women-born\": 2247,\r\n    \"natality-rate\": 5.30,\r\n    \"fertility-rate\": 1.25\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- add cuba with bad parameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"cuba\",\r\n    \"date\": 2019,\r\n    \"born\": 45613,\r\n    \"men-born\": 23186,\r\n    \"women-born\": 22427,\r\n    \"natality-rate\": 8.30\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "finland/2019 - modify finland 2019",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Modify resource\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"pm.test(\"Test data type of the request\", () => {\r",
+											"  const jsonData = JSON.parse(pm.request.body.raw);\r",
+											"  \r",
+											"  pm.expect(jsonData.country).to.be.a(\"string\");\r",
+											"  pm.expect(jsonData.date).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData.born).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"men-born\"]).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"women-born\"]).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"natality-rate\"]).to.be.a(\"number\");\r",
+											"  pm.expect(jsonData[\"fertility-rate\"]).to.be.a(\"number\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"prusia\",\r\n    \"date\": 2019,\r\n    \"born\": 100,\r\n    \"men-born\": 4358,\r\n    \"women-born\": 41372,\r\n    \"natality-rate\": 9.60,\r\n    \"fertility-rate\": 1.46\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/prusia/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"prusia",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- check prusia is modified",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Check born is modified\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    \r",
+											"    pm.expect(jsonData.born).to.eql(100);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/prusia/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"prusia",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- check not allowed",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Not allowed\", function () {\r",
+											"    pm.response.to.have.status(405);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"finland\",\r\n    \"date\": 2019,\r\n    \"born\": 45.613,\r\n    \"men-born\": 23.186,\r\n    \"women-born\": 22.427,\r\n    \"natality-rate\": 8.30\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "laponia/2019 - check resource not found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Modify resource that doesn't exist\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"laponia\",\r\n    \"date\": 2019,\r\n    \"born\": 84952,\r\n    \"men-born\": 4358,\r\n    \"women-born\": 41372,\r\n    \"natality-rate\": 9.60,\r\n    \"fertility-rate\": 1.46\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/laponia/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"laponia",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "prusia/2019 - check bad content",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Bad content\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"prusia\",\r\n    \"date\": 2019,\r\n    \"born\": 45613,\r\n    \"men-born\": 23186,\r\n    \"women-born\": 22427,\r\n    \"natality-rate\": 8.30\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/prusia/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"prusia",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "madagascar/2019 - exprected delete error",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Delete resource that doesn't exist\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/madagascar/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"madagascar",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "prusia/2019 - delete prusia 2019",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/prusia/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"prusia",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- check prusia no exists",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats/prusia/2019",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats",
+										"prusia",
+										"2019"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "- delete all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{heroku}}/api/v2/natality-stats",
+									"host": [
+										"{{heroku}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"natality-stats"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost",
+			"value": "http://localhost:10000",
+			"disabled": true
+		},
+		{
+			"key": "heroku",
+			"value": "http://sos2021-natality-stats.herokuapp.com"
+		}
+	]
+}

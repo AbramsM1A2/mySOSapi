@@ -1,0 +1,6 @@
+node_modules
+src/back/DivorceAPI/divorce-stats.db
+src/back/lifeAPI/life-stats.db
+public/build
+src/back/natality-statsAPI/natality-stats.db
+*.db
