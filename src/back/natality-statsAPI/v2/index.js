@@ -18,22 +18,12 @@ module.exports.register = (app) => {
     //Crea 2 o más recursos.
     app.get(BASE_API_PATH + "/natality-stats/loadInitialData", (req, res) => {
         
-        db.find({ $or: [{ country: "denmark" }, { country: "switzerland" }] }, { _id: 0 }, function (err, data) {
-            if (err) {
-                console.error("ERROR accesing DB in GET");
-                res.sendStatus(500);
-            } else {
-                if (data.length == 0) {
-                    db.insert(initialdata);
-                    console.log(`Loaded initial data: <${JSON.stringify(initialdata, null, 2)}>`);
-                    res.sendStatus(201);
-                } else {
-                    console.error(`initial data already exists`);
-                    res.sendStatus(409);
-                }
-            }
+        app.get(BASE_API_PATH + "/natality-stats/loadInitialData", (req, res) => {
+            db.remove({}, {multi: true});
+            db.insert(initialdata);
+            console.log(`Loaded initial data: <${JSON.stringify(initialdata, null, 2)}>`);
+            res.sendStatus(201);
         });
-
     });
 
     //GET /api/v1/natality-stats 
