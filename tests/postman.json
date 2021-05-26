@@ -53,7 +53,7 @@
 									"script": {
 										"exec": [
 											"pm.test(\"Load resources\", function () {\r",
-											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(200);\r",
 											"});\r",
 											"pm.test(\"Response time is less than 300ms\", function () {\r",
 											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
@@ -745,7 +745,7 @@
 									"script": {
 										"exec": [
 											"pm.test(\"Load resources\", function () {\r",
-											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(200);\r",
 											"});\r",
 											"pm.test(\"Response time is less than 300ms\", function () {\r",
 											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
@@ -780,8 +780,8 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Resources already exists\", function () {\r",
-											"    pm.response.to.have.status(409);\r",
+											"pm.test(\"Load OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
 											"});\r",
 											"pm.test(\"Response time is less than 300ms\", function () {\r",
 											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
