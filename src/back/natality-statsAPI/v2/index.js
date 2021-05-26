@@ -8,7 +8,7 @@ var initialdata = require(path.join(__dirname, 'initialData.js'));
 //required variables
 var BASE_API_PATH = "/api/v2";
 var datafile = path.join(__dirname, 'natality-stats.db');
-var db = new Datastore({ filename: datafile, autoload: true});
+var db = new Datastore({ filename: datafile, autoload: true });
 
 
 //implementation
@@ -17,13 +17,10 @@ module.exports.register = (app) => {
     //GET /api/v1/natality-stats/loadInitialData 
     //Crea 2 o más recursos.
     app.get(BASE_API_PATH + "/natality-stats/loadInitialData", (req, res) => {
-        
-        app.get(BASE_API_PATH + "/natality-stats/loadInitialData", (req, res) => {
-            db.remove({}, {multi: true});
-            db.insert(initialdata);
-            console.log(`Loaded initial data: <${JSON.stringify(initialdata, null, 2)}>`);
-            res.sendStatus(200);
-        });
+        db.remove({}, { multi: true });
+        db.insert(initialdata);
+        console.log(`Loaded initial data: <${JSON.stringify(initialdata, null, 2)}>`);
+        res.sendStatus(200);
     });
 
     //GET /api/v1/natality-stats 
@@ -54,8 +51,8 @@ module.exports.register = (app) => {
                 queryObject[d] = parseFloat(query[d]);
             } else if (d == 'fertility-rate') {
                 queryObject[d] = parseFloat(query[d]);
-            }else{
-                queryObject[d]=null;
+            } else {
+                queryObject[d] = null;
             }
             if (d != 'limit' && d != 'offset') {
                 cookedQuery.push(queryObject);
