@@ -22,7 +22,7 @@ module.exports.register = (app) => {
             db.remove({}, {multi: true});
             db.insert(initialdata);
             console.log(`Loaded initial data: <${JSON.stringify(initialdata, null, 2)}>`);
-            res.sendStatus(201);
+            res.sendStatus(200);
         });
     });
 
